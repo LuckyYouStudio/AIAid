@@ -51,7 +51,7 @@ src/cli.ts               终端测试
 
 ## 部署到 Vercel + Turso
 
-线上地址：https://aiaid-luck-you.vercel.app （推送 `main` 自动部署）
+线上地址：https://www.the5288.com （备用 https://aiaid-sepia.vercel.app；推送 `main` 自动部署）
 
 Vercel 无持久文件系统，线上数据库用 Turso（云端 SQLite）。
 
