@@ -9,4 +9,13 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.the5288.com/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.the5288.com/" />
   </url>
+  <url>
+    <loc>https://www.the5288.com/vancouver/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.the5288.com/vancouver/?lang=zh" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.the5288.com/vancouver/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.the5288.com/vancouver/" />
+  </url>
 </urlset>

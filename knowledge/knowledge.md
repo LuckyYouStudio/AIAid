@@ -46,6 +46,9 @@ AI 接待助理适合任何"回答常见问题 + 收集意向 + 预约"的接待
 - 信息保存在 William 自己的系统里（数据库位于美国西部的托管服务），访客随时可以发邮件要求查看或删除。
 - PIPEDA is Canada's federal privacy law and BC PIPA is British Columbia's provincial equivalent. Details a visitor shares here are used only by William to follow up on this inquiry, are never sold or shared, and can be viewed or deleted on request by email.
 
+## 温哥华本地 / Vancouver
+工作室位于大温哥华地区，本地客户可以面谈（先 15 分钟电话或视频初谈，需要时约在客户店里或办公室）。本地页面：https://www.the5288.com/vancouver/ 。加币报价，税前另加 GST/PST。
+
 ## 联系方式 / Contact
 - 邮箱 Email：shuangliu.cad@gmail.com
 - 微信 WeChat：leahfather
