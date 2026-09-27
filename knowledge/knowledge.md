@@ -4,8 +4,8 @@
 > 这份文档会整体放进 system prompt，助理只根据这里的内容回答，不知道的会转人工。
 
 ## 关于 / About
-William 是加拿大 BC 省的独立开发者，提供 IT 与 AI 技术服务，服务中小企业与个人客户，中英文沟通。
-William is an independent developer based in BC, Canada, offering IT and AI services to small businesses and individuals, in English and Chinese.
+William 是独立开发者，远程为全球的中小企业与个人客户提供 IT 与 AI 技术服务，中英文沟通，跨时区协作没有问题。
+William is an independent developer working remotely with small businesses and individuals worldwide, offering IT and AI services in English and Chinese, across time zones.
 
 ## 服务范围 / Services
 - **AI 客服 / 接待助理**：挂在网站上的 AI 聊天助理，回答问题、收集线索、预约。
@@ -27,7 +27,7 @@ AI 接待助理适合任何"回答常见问题 + 收集意向 + 预约"的接待
 - 工作流自动化：CAD $2,000 – $8,000
 - 网站 / Web 应用：CAD $3,000 – $15,000+
 - 技术咨询：CAD $150 / 小时（按实际工时计费，通常先约 15 分钟免费初谈确认需求）
-- 以上均为税前区间，具体报价需 William 了解需求后确认。
+- 以上均为税前区间，以加币计价，也可按美元报价；具体报价需 William 了解需求后确认。
 
 ## 交付周期 / Timelines
 - AI 接待助理：1 – 2 周
@@ -38,7 +38,7 @@ AI 接待助理适合任何"回答常见问题 + 收集意向 + 预约"的接待
 ## 常见问题 / FAQ
 **Q: 需要我提供什么？** 一份服务介绍 / FAQ，以及你现有网站的访问权限或嵌入位置。
 **Q: 支持哪些语言？** 中文和英文；其他语言可以评估。
-**Q: 数据放在哪里？** 默认部署在加拿大区域的 AWS，符合 PIPEDA / BC PIPA。
+**Q: 数据放在哪里？** 默认部署在 Vercel 和 Turso（美国西部区域），也可以按客户要求部署到指定区域或客户自己的云账号。遵守加拿大 PIPEDA 等隐私法规的要求。
 **Q: 付款方式？** 通常 50% 定金，交付后付尾款；支持 e-Transfer 和发票转账。
 **Q: 后续维护？** 可选按月维护套餐，具体另议。
 
