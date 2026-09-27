@@ -29,9 +29,9 @@ export const config = {
     .map((s) => s.trim())
     .filter(Boolean),
   limits: {
-    perMinute: num('LIMIT_PER_MINUTE', 10), // user messages per visitor or IP
-    perDay: num('LIMIT_PER_DAY', 60),
-    globalPerDay: num('LIMIT_GLOBAL_PER_DAY', 2000), // all visitors combined; hard cost stop
+    perMinute: num('LIMIT_PER_MINUTE', 100), // user messages per visitor or IP
+    perDay: num('LIMIT_PER_DAY', 1000),
+    globalPerDay: num('LIMIT_GLOBAL_PER_DAY', 20000), // all visitors combined; hard cost stop
     maxMessageChars: num('LIMIT_MESSAGE_CHARS', 1000),
     maxTurnsPerConversation: num('LIMIT_TURNS_PER_CONVERSATION', 40),
     historyMessages: num('LIMIT_HISTORY_MESSAGES', 24), // messages sent to the model
