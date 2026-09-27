@@ -37,12 +37,14 @@ src/llm/tools.ts         save_lead / notify_owner 定义
 src/llm/openai.ts        流式调用 + tool call 累积
 src/notify/              console / telegram 通知（邮件预留）
 src/services/chat.ts     对话循环：持久化、工具执行、流式事件
-src/server.ts            Hono + SSE
+src/server.ts            Hono + SSE + 静态文件（/ 演示页，/widget.js 挂件）
+public/widget.js         可嵌入聊天挂件，一行 <script> 接入
+public/index.html        演示页
 src/cli.ts               终端测试
 ```
 
 ## 下一步
 
-- 可嵌入聊天挂件（一行 `<script>`）
+- ~~可嵌入聊天挂件~~ 已完成：`public/widget.js`，演示页 `public/index.html`（启动服务后打开 http://localhost:3000）
 - Telegram 通知实测（`NOTIFY_CHANNEL=telegram` + Bot token / chat id）
 - 简单后台：对话记录、线索列表、登录保护

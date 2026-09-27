@@ -17,8 +17,8 @@ William is an independent developer based in BC, Canada, offering IT and AI serv
 - AI 接待助理部署：CAD $1,500 – $4,000（视知识库与集成复杂度）
 - 工作流自动化：CAD $2,000 – $8,000
 - 网站 / Web 应用：CAD $3,000 – $15,000+
-- 技术咨询：CAD $120 – $180 / 小时
-- 以上均为区间，具体报价需 William 了解需求后确认。
+- 技术咨询：CAD $150 / 小时（按实际工时计费，通常先约 15 分钟免费初谈确认需求）
+- 以上均为税前区间，具体报价需 William 了解需求后确认。
 
 ## 交付周期 / Timelines
 - AI 接待助理：1 – 2 周

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>William — IT / AI 技术服务</title>
+  <style>
+    :root { --ink: #1a1a1a; --muted: #5f6673; --accent: #1f6feb; --bg: #ffffff; --card: #f6f7f9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+    header { padding: 24px 16px; max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    header b { font-size: 18px; }
+    header nav a { color: var(--muted); text-decoration: none; margin-left: 20px; }
+    .hero { max-width: 960px; margin: 40px auto 0; padding: 0 16px; }
+    .hero h1 { font-size: 40px; line-height: 1.2; margin: 0 0 16px; }
+    .hero p { font-size: 18px; color: var(--muted); max-width: 640px; }
+    .cta { display: inline-block; margin-top: 12px; background: var(--accent); color: #fff; padding: 12px 22px; border-radius: 10px; text-decoration: none; }
+    .grid { max-width: 960px; margin: 56px auto; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .card { background: var(--card); border-radius: 14px; padding: 20px; }
+    .card h3 { margin: 0 0 6px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    footer { max-width: 960px; margin: 40px auto 80px; padding: 0 16px; color: var(--muted); font-size: 13px; }
+    footer code { background: var(--card); padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <b>William</b>
+    <nav><a href="#services">服务</a><a href="#contact">联系</a></nav>
+  </header>
+
+  <section class="hero">
+    <h1>把 AI 用到你的生意里，<br/>从一个能落地的小项目开始。</h1>
+    <p>独立开发者，加拿大 BC 省。为中小企业做 AI 客服、工作流自动化和 Web 应用。中英文沟通，先聊清楚再报价。</p>
+    <a class="cta" href="https://cal.com/the5288/15min" target="_blank" rel="noopener">约 15 分钟免费初谈</a>
+  </section>
+
+  <section class="grid" id="services">
+    <div class="card"><h3>AI 接待助理</h3><p>挂在网站上，回答问题、筛选线索、自动预约。你现在右下角看到的就是。</p></div>
+    <div class="card"><h3>工作流自动化</h3><p>把重复的文档、邮件、数据处理交给 AI，人只做判断。</p></div>
+    <div class="card"><h3>网站与 Web 应用</h3><p>从落地页到带后台的业务系统。</p></div>
+    <div class="card"><h3>技术咨询</h3><p>AI 选型、架构评审，按小时计费。</p></div>
+  </section>
+
+  <footer id="contact">
+    这是挂件演示页。把下面这一行加到任何网页的 <code>&lt;/body&gt;</code> 前即可嵌入：<br/>
+    <code>&lt;script src="http://localhost:3000/widget.js" data-tenant="default" data-title="William 的 AI 助理"&gt;&lt;/script&gt;</code>
+  </footer>
+
+  <script src="/widget.js" data-tenant="default" data-title="William 的 AI 助理"></script>
+</body>
+</html>

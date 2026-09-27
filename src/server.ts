@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
 import { randomUUID } from 'node:crypto';
 import { config } from './config.js';
 import { chatTurn, getOrCreateConversation, getTenant } from './services/chat.js';
@@ -10,6 +11,9 @@ const app = new Hono();
 app.use('/api/*', cors());
 
 app.get('/health', (c) => c.json({ ok: true }));
+
+// Static: demo page at / and the embeddable widget at /widget.js
+app.use('/*', serveStatic({ root: './public' }));
 
 /**
  * POST /api/chat
