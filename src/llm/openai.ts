@@ -1,4 +1,5 @@
-import OpenAI from 'openai';
+import { OpenAI } from 'openai';
+import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
 import { config } from '../config.js';
 
 export const openai = new OpenAI({
@@ -6,7 +7,7 @@ export const openai = new OpenAI({
   baseURL: config.openaiBaseUrl,
 });
 
-export type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+export type ChatMessage = ChatCompletionMessageParam;
 
 export interface StreamResult {
   content: string;
@@ -16,7 +17,7 @@ export interface StreamResult {
 /** Streams one completion; emits text deltas via onToken and accumulates tool calls. */
 export async function streamCompletion(
   messages: ChatMessage[],
-  tools: OpenAI.Chat.Completions.ChatCompletionTool[],
+  tools: ChatCompletionTool[],
   onToken: (t: string) => void,
 ): Promise<StreamResult> {
   const stream = await openai.chat.completions.create({
