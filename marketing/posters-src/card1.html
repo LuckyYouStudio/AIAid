@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>promo card 1</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  html, body { margin: 0; background: #0f172a; }
+  .card { width: 720px; height: 900px; box-sizing: border-box; padding: 64px 60px; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 55%, #1f6feb 100%); color: #fff; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; }
+  .tag { display: inline-block; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 6px 16px; font-size: 18px; letter-spacing: 1px; }
+  h1 { font-size: 58px; line-height: 1.2; margin: 28px 0 18px; font-weight: 800; }
+  .sub { font-size: 24px; opacity: .9; line-height: 1.5; margin: 0 0 40px; }
+  ul { list-style: none; padding: 0; margin: 0 0 44px; }
+  li { font-size: 24px; line-height: 1.45; padding: 10px 0 10px 44px; position: relative; }
+  li::before { content: "✓"; position: absolute; left: 0; top: 8px; width: 30px; height: 30px; border-radius: 50%; background: #fff; color: #1f6feb; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .bottom { position: absolute; left: 60px; right: 60px; bottom: 56px; display: flex; align-items: flex-end; justify-content: space-between; }
+  .url { font-size: 30px; font-weight: 700; letter-spacing: .5px; }
+  .brand { font-size: 18px; opacity: .8; margin-top: 8px; }
+  .qr { background: #fff; padding: 10px; border-radius: 14px; }
+  .qr img, .qr canvas { display: block; }
+  .qr small { display: block; text-align: center; color: #1f2937; font-size: 13px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="tag">AI 接待助理 · 网站一行代码接入</span>
+  <h1>给你的网站<br/>请一个不睡觉的前台</h1>
+  <p class="sub">客户问什么都能答，问不了的秒转给你。<br/>中英文自动切换，24 小时在线。</p>
+  <ul>
+    <li>回答服务、价格区间、常见问题</li>
+    <li>自然聊天中收集需求和联系方式</li>
+    <li>意向明确直接给预约链接</li>
+    <li>线索和转人工通知推到你手机</li>
+  </ul>
+  <div class="bottom">
+    <div>
+      <div class="url">www.the5288.com</div>
+      <div class="brand">LuckyYou Studio · 去网站右下角跟它聊聊</div>
+    </div>
+    <div class="qr"><div id="qr"></div><small>扫码体验</small></div>
+  </div>
+</div>
+<script>new QRCode(document.getElementById('qr'), { text: 'https://www.the5288.com', width: 150, height: 150, correctLevel: QRCode.CorrectLevel.M });</script>
+</body>
+</html>

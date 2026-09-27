@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>promo card 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  html, body { margin: 0; background: #f6f7f9; }
+  .card { width: 720px; height: 900px; box-sizing: border-box; padding: 52px 60px 44px; display: flex; flex-direction: column; background: #ffffff; color: #16181d; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; }
+  .kicker { color: #1f6feb; font-weight: 700; font-size: 20px; letter-spacing: 2px; }
+  h1 { font-size: 42px; line-height: 1.22; margin: 10px 0 8px; font-weight: 800; }
+  .sub { color: #5f6673; font-size: 19px; margin: 0 0 22px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .cell { background: #f6f7f9; border-radius: 12px; padding: 12px 12px; }
+  .cell b { display: block; font-size: 17px; margin-bottom: 3px; }
+  .cell span { font-size: 13px; color: #5f6673; line-height: 1.35; display: block; }
+  .bottom { margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid #e6e8eb; padding-top: 18px; }
+  .url { font-size: 28px; font-weight: 800; color: #1f6feb; }
+  .brand { font-size: 16px; color: #5f6673; margin-top: 6px; }
+  .qr { background: #fff; border: 1px solid #e6e8eb; padding: 8px; border-radius: 12px; }
+  .qr small { display: block; text-align: center; color: #5f6673; font-size: 12px; margin-top: 5px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="kicker">适用行业</div>
+  <h1>只要有人问你问题，<br/>它就能替你先接待</h1>
+  <p class="sub">同一套系统，换一份知识文档，就是另一个行业的前台。</p>
+  <div class="grid">
+    <div class="cell"><b>房地产经纪</b><span>房源、学区、约看房，分清买家卖家</span></div>
+    <div class="cell"><b>汽车 / 二手车</b><span>车型库存、金融区间、试驾预约</span></div>
+    <div class="cell"><b>餐饮</b><span>订位、菜单、过敏原、高峰不漏单</span></div>
+    <div class="cell"><b>诊所 / 牙科</b><span>项目、保险、预约改期，诊断转医生</span></div>
+    <div class="cell"><b>移民 / 留学</b><span>条件、材料、周期，初筛后约顾问</span></div>
+    <div class="cell"><b>贷款 / 保险</b><span>产品、条件、文件，线索转持牌经纪</span></div>
+    <div class="cell"><b>装修 / 承包</b><span>范围、报价流程，约上门评估</span></div>
+    <div class="cell"><b>律师 / 会计</b><span>业务范围、收费、初次咨询分流</span></div>
+    <div class="cell"><b>美容 / 健身</b><span>价目、会员、预约取消</span></div>
+    <div class="cell"><b>物业 / 租房</b><span>房源、申请、看房，报修自动记录</span></div>
+    <div class="cell"><b>培训 / 教育</b><span>课程、学费区间，安排试听</span></div>
+    <div class="cell"><b>你的行业？</b><span>说说接待流程，大多数场景都适用</span></div>
+  </div>
+  <div class="bottom">
+    <div>
+      <div class="url">www.the5288.com</div>
+      <div class="brand">LuckyYou Studio · 网站右下角直接和 AI 前台聊</div>
+    </div>
+    <div class="qr"><div id="qr"></div><small>扫码体验</small></div>
+  </div>
+</div>
+<script>new QRCode(document.getElementById('qr'), { text: 'https://www.the5288.com', width: 110, height: 110, correctLevel: QRCode.CorrectLevel.M });</script>
+</body>
+</html>
