@@ -51,6 +51,8 @@ src/cli.ts               终端测试
 
 ## 部署到 Vercel + Turso
 
+线上地址：https://aiaid-luck-you.vercel.app （推送 `main` 自动部署）
+
 Vercel 无持久文件系统，线上数据库用 Turso（云端 SQLite）。
 
 1. **Turso**：`turso db create aiaid` 或在 turso.tech 控制台建库，拿到 `libsql://...` URL 和 auth token。
