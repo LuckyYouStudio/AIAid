@@ -37,3 +37,5 @@ app.post('/api/chat', async (c) => {
     }
   });
 });
+
+export default app;

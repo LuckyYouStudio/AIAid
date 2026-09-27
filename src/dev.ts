@@ -1,4 +1,4 @@
-// Local / self-hosted Node server. On Vercel, api/index.ts is the entry instead.
+// Local / self-hosted Node server. On Vercel, api/[[...path]].ts is the entry instead.
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { config } from './config.js';

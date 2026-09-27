@@ -5,8 +5,8 @@
   "type": "module",
   "description": "AI reception assistant (multi-tenant SaaS prototype)",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/dev.ts",
+    "start": "tsx src/dev.ts",
     "cli": "tsx src/cli.ts",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
