@@ -1,4 +1,4 @@
-// The Hono app, shared by the local Node server (src/server.ts) and the Vercel function (api/index.ts).
+// The Hono app, shared by the local Node server (src/dev.ts) and the Vercel function (api/[[...path]].ts).
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
