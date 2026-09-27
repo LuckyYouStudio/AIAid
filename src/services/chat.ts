@@ -11,7 +11,9 @@ import { notifierFor, type NotifyConfig } from '../notify/index.js';
 const MAX_TOOL_ROUNDS = 4;
 
 export interface ChatEvent {
-  type: 'token' | 'tool' | 'done' | 'error';
+  // 'reset' tells the client to discard text streamed so far in this turn: the model wrote a
+  // reply, called a tool, and is now writing the reply again with the tool result in hand.
+  type: 'token' | 'tool' | 'reset' | 'done' | 'error';
   data: string;
 }
 
@@ -214,6 +216,7 @@ export async function* chatTurn(
         messages.push({ role: 'tool', tool_call_id: tc.id, content: output });
         await saveMessage(tenantId, conversationId, 'tool', output, tc.id);
       }
+      if (result.content) queue.push({ type: 'reset', data: '' });
     }
   })()
     .catch((err) => (failure = err))

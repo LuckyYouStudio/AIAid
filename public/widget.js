@@ -149,6 +149,7 @@
     var bot = addMsg('bot', '');
     bot.classList.add('typing');
     var buf = '';
+    var pendingReset = false;
     sendBtn.disabled = true;
 
     fetch(apiBase + '/api/chat', {
@@ -198,9 +199,13 @@
         conversationId = payload;
         try { localStorage.setItem(storageKey, payload); } catch (e) {}
       } else if (event === 'token') {
+        // After a tool call the model rewrites its reply; replace instead of appending.
+        if (pendingReset) { buf = ''; pendingReset = false; }
         buf += payload;
         bot.innerHTML = render(buf);
         msgs.scrollTop = msgs.scrollHeight;
+      } else if (event === 'reset') {
+        pendingReset = true;
       } else if (event === 'error') {
         addMsg('err', payload);
       }

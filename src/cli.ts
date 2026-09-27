@@ -19,6 +19,7 @@ while (true) {
   for await (const ev of chatTurn(tenantId, conversation.id, line)) {
     if (ev.type === 'token') stdout.write(ev.data);
     else if (ev.type === 'tool') stdout.write(`\n[tool: ${ev.data}]\n`);
+    else if (ev.type === 'reset') stdout.write(`\n[rewriting reply]\n`);
     else if (ev.type === 'error') stdout.write(`\n[error] ${ev.data}`);
   }
   stdout.write('\n\n');
