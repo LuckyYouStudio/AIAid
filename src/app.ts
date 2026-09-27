@@ -9,6 +9,7 @@ export const app = new Hono();
 app.use('/api/*', cors());
 
 app.get('/health', (c) => c.json({ ok: true }));
+app.get('/api/health', (c) => c.json({ ok: true }));
 
 /**
  * POST /api/chat
