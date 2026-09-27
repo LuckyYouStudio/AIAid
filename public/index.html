@@ -19,6 +19,11 @@
     .card { background: var(--card); border-radius: 14px; padding: 20px; }
     .card h3 { margin: 0 0 6px; font-size: 17px; }
     .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    .contact { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    .contact h2 { font-size: 24px; margin: 0 0 8px; }
+    .contact ul { list-style: none; padding: 0; margin: 0; color: var(--muted); }
+    .contact li { padding: 4px 0; }
+    .contact a { color: var(--accent); text-decoration: none; }
     footer { max-width: 960px; margin: 40px auto 80px; padding: 0 16px; color: var(--muted); font-size: 13px; }
     footer code { background: var(--card); padding: 2px 6px; border-radius: 6px; }
   </style>
@@ -42,7 +47,17 @@
     <div class="card"><h3>技术咨询</h3><p>AI 选型、架构评审，按小时计费。</p></div>
   </section>
 
-  <footer id="contact">
+  <section class="contact" id="contact">
+    <h2>联系我</h2>
+    <ul>
+      <li>邮箱：<a href="mailto:shuangliu.cad@gmail.com">shuangliu.cad@gmail.com</a></li>
+      <li>微信：leahfather</li>
+      <li>Telegram：<a href="https://t.me/qwerfdsa8888" target="_blank" rel="noopener">@qwerfdsa8888</a></li>
+      <li>预约通话：<a href="https://cal.com/the5288/15min" target="_blank" rel="noopener">cal.com/the5288/15min</a></li>
+    </ul>
+  </section>
+
+  <footer>
     这是挂件演示页。把下面这一行加到任何网页的 <code>&lt;/body&gt;</code> 前即可嵌入：<br/>
     <code>&lt;script src="http://localhost:3000/widget.js" data-tenant="default" data-title="William 的 AI 助理"&gt;&lt;/script&gt;</code>
   </footer>

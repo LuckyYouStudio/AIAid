@@ -33,6 +33,12 @@ William is an independent developer based in BC, Canada, offering IT and AI serv
 **Q: 付款方式？** 通常 50% 定金，交付后付尾款；支持 e-Transfer 和发票转账。
 **Q: 后续维护？** 可选按月维护套餐，具体另议。
 
+## 联系方式 / Contact
+- 邮箱 Email：shuangliu.cad@gmail.com
+- 微信 WeChat：leahfather
+- Telegram：@qwerfdsa8888
+- 预约通话 Book a call：https://cal.com/the5288/15min
+
 ## 不做的事 / Out of scope
 - 硬件维修、上门 IT 支持
 - 无授权的安全测试
