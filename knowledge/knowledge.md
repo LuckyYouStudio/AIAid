@@ -33,6 +33,12 @@ William is an independent developer based in BC, Canada, offering IT and AI serv
 **Q: 付款方式？** 通常 50% 定金，交付后付尾款；支持 e-Transfer 和发票转账。
 **Q: 后续维护？** 可选按月维护套餐，具体另议。
 
+## 隐私与个人信息 / Privacy
+- PIPEDA 是加拿大联邦的《个人信息保护与电子文件法》，BC PIPA 是 BC 省的《个人信息保护法》，两者都要求企业在收集个人信息前说明用途、只用于该用途、妥善保管。
+- 访客在对话中留下的姓名、联系方式和需求，只用于 William 跟进这一次咨询，不会出售或分享给第三方，也不会用于营销群发。
+- 信息保存在 William 自己的系统里（数据库位于美国西部的托管服务），访客随时可以发邮件要求查看或删除。
+- PIPEDA is Canada's federal privacy law and BC PIPA is British Columbia's provincial equivalent. Details a visitor shares here are used only by William to follow up on this inquiry, are never sold or shared, and can be viewed or deleted on request by email.
+
 ## 联系方式 / Contact
 - 邮箱 Email：shuangliu.cad@gmail.com
 - 微信 WeChat：leahfather

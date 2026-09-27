@@ -66,12 +66,18 @@ async function loadHistory(conversationId: string): Promise<ChatMessage[]> {
   });
 }
 
-async function upsertLead(tenantId: string, conversationId: string, args: SaveLeadArgs): Promise<Lead> {
+/** Saves the lead; `contactCaptured` is true the first time a contact method lands on it. */
+async function upsertLead(
+  tenantId: string,
+  conversationId: string,
+  args: SaveLeadArgs,
+): Promise<{ lead: Lead; contactCaptured: boolean }> {
   const existing = await db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
   const patch = Object.fromEntries(Object.entries(args).filter(([, v]) => typeof v === 'string' && v.trim()));
   if (existing) {
     await db.update(schema.leads).set(patch).where(eq(schema.leads.id, existing.id)).run();
-    return { ...existing, ...patch };
+    const lead = { ...existing, ...patch };
+    return { lead, contactCaptured: !existing.contact && !!lead.contact };
   }
   const lead: Lead = {
     id: randomUUID(),
@@ -88,7 +94,7 @@ async function upsertLead(tenantId: string, conversationId: string, args: SaveLe
     ...patch,
   };
   await db.insert(schema.leads).values(lead).run();
-  return lead;
+  return { lead, contactCaptured: !!lead.contact };
 }
 
 async function runTool(tenant: Tenant, conversationId: string, name: string, rawArgs: string): Promise<string> {
@@ -100,8 +106,25 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
   }
 
   if (name === 'save_lead') {
-    const lead = await upsertLead(tenant.id, conversationId, args as SaveLeadArgs);
-    return JSON.stringify({ ok: true, lead_id: lead.id });
+    const { lead, contactCaptured } = await upsertLead(tenant.id, conversationId, args as SaveLeadArgs);
+    // The owner is notified the moment a lead becomes reachable, regardless of whether the
+    // model also decides to call notify_owner. This must not depend on the model remembering.
+    let ownerNotified = false;
+    if (contactCaptured) {
+      const cfg = JSON.parse(tenant.notifyConfig || '{}') as NotifyConfig;
+      try {
+        await notifierFor(cfg).send({
+          reason: 'new_lead',
+          summary: `New lead with contact details: ${lead.need ?? '(need not stated yet)'}`,
+          conversationId,
+          lead,
+        });
+        ownerNotified = true;
+      } catch (err) {
+        console.error('new_lead notification failed:', err);
+      }
+    }
+    return JSON.stringify({ ok: true, lead_id: lead.id, owner_notified: ownerNotified });
   }
 
   if (name === 'notify_owner') {
