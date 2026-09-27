@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { asc, eq } from 'drizzle-orm';
+import { config } from '../config.js';
 import { db, schema } from '../db/index.js';
 import type { Lead, Tenant } from '../db/schema.js';
 import { composeSystemMessage } from '../llm/prompt.js';
@@ -20,12 +21,17 @@ export async function getTenant(tenantId: string): Promise<Tenant> {
   return t;
 }
 
-export async function getOrCreateConversation(tenantId: string, conversationId: string | undefined, visitorId: string) {
+export async function getOrCreateConversation(
+  tenantId: string,
+  conversationId: string | undefined,
+  visitorId: string,
+  ip: string | null = null,
+) {
   if (conversationId) {
     const c = await db.select().from(schema.conversations).where(eq(schema.conversations.id, conversationId)).get();
     if (c && c.tenantId === tenantId) return c;
   }
-  const c = { id: randomUUID(), tenantId, visitorId, startedAt: new Date(), language: null };
+  const c = { id: randomUUID(), tenantId, visitorId, ip, startedAt: new Date(), language: null };
   await db.insert(schema.conversations).values(c).run();
   return c;
 }
@@ -45,14 +51,19 @@ async function saveMessage(tenantId: string, conversationId: string, role: strin
     .run();
 }
 
-/** Rebuild the OpenAI message list from persisted messages. */
+/** Rebuild the OpenAI message list from persisted messages, keeping only a recent window. */
 async function loadHistory(conversationId: string): Promise<ChatMessage[]> {
-  const rows = await db
+  const all = await db
     .select()
     .from(schema.messages)
     .where(eq(schema.messages.conversationId, conversationId))
     .orderBy(asc(schema.messages.createdAt))
     .all();
+
+  // Trim to the last N messages, then drop any leading tool results / assistant tool-call
+  // messages so the window never starts mid tool exchange (the API rejects that).
+  let rows = all.slice(-config.limits.historyMessages);
+  while (rows.length && rows[0].role !== 'user') rows = rows.slice(1);
 
   return rows.map((m): ChatMessage => {
     if (m.role === 'assistant') {
@@ -131,6 +142,16 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
     const a = args as NotifyOwnerArgs;
     const cfg = JSON.parse(tenant.notifyConfig || '{}') as NotifyConfig;
     const lead = await db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
+    // Only interrupt the owner when they can act on it: the visitor is reachable, or they
+    // explicitly want a quote. Anything else waits until a contact method arrives (which then
+    // triggers the automatic new_lead notification in save_lead).
+    if (!lead?.contact && a.reason !== 'quote_request') {
+      return JSON.stringify({
+        ok: false,
+        skipped: true,
+        error: 'owner not notified: no contact method yet. Ask the visitor for an email/phone/WeChat so the owner can reply.',
+      });
+    }
     try {
       await notifierFor(cfg).send({ reason: a.reason, summary: a.summary, conversationId, lead });
       return JSON.stringify({ ok: true, reply_sla: cfg.replySla ?? 'soon' });

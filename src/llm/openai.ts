@@ -25,6 +25,7 @@ export async function streamCompletion(
     messages,
     tools,
     stream: true,
+    max_completion_tokens: config.limits.maxOutputTokens,
   });
 
   let content = '';

@@ -17,6 +17,8 @@ export const conversations = sqliteTable('conversations', {
   id: text('id').primaryKey(),
   tenantId: text('tenant_id').notNull().references(() => tenants.id),
   visitorId: text('visitor_id').notNull(),
+  // Client IP (from x-forwarded-for) used for rate limiting alongside visitor_id.
+  ip: text('ip'),
   startedAt: integer('started_at', { mode: 'timestamp_ms' }).notNull(),
   language: text('language'),
 });

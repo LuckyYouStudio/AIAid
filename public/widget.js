@@ -73,7 +73,15 @@
   var input = root.querySelector('textarea');
   var sendBtn = root.querySelector('.aiaid-send');
   var conversationId = null;
-  try { conversationId = localStorage.getItem(storageKey); } catch (e) {}
+  var visitorId = null;
+  try {
+    conversationId = localStorage.getItem(storageKey);
+    visitorId = localStorage.getItem('aiaid:visitor');
+    if (!visitorId) {
+      visitorId = 'v-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem('aiaid:visitor', visitorId);
+    }
+  } catch (e) {}
 
   root.querySelector('.aiaid-bubble').addEventListener('click', function () {
     root.classList.toggle('open');
@@ -146,9 +154,15 @@
     fetch(apiBase + '/api/chat', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ message: text, conversationId: conversationId, tenantId: tenant }),
+      body: JSON.stringify({ message: text, conversationId: conversationId, visitorId: visitorId, tenantId: tenant }),
     }).then(function (res) {
-      if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+      if (!res.ok) {
+        // Server-side guard (rate limit, too long, origin) returns JSON { error }.
+        return res.json().catch(function () { return {}; }).then(function (j) {
+          throw new Error(j.error || ('HTTP ' + res.status));
+        });
+      }
+      if (!res.body) throw new Error('HTTP ' + res.status);
       var reader = res.body.getReader();
       var dec = new TextDecoder();
       var pending = '';
@@ -165,7 +179,7 @@
       return pump();
     }).catch(function (err) {
       bot.remove();
-      addMsg('err', (zh ? '连接失败，请稍后再试。' : 'Connection failed, please try again.') + ' (' + err.message + ')');
+      addMsg('err', err.message || (zh ? '连接失败，请稍后再试。' : 'Connection failed, please try again.'));
     }).then(function () {
       bot.classList.remove('typing');
       if (!buf && bot.parentNode) bot.remove();
