@@ -14,7 +14,8 @@
   var title = ds.title || 'AI 助理';
   var color = ds.color || '#1f6feb';
   var side = ds.position === 'left' ? 'left' : 'right';
-  var zh = /^zh/i.test(navigator.language);
+  // Follow the host page's <html lang> when set, otherwise the browser language.
+  var zh = /^zh/i.test(ds.lang || document.documentElement.lang || navigator.language);
   var greeting = ds.greeting || (zh
     ? '你好，我是 William 的 AI 助理。想了解服务、价格，或者约个时间聊聊，都可以问我。'
     : "Hi, I'm William's AI assistant. Ask me about services, pricing, or book a time to talk.");
@@ -76,7 +77,21 @@
 
   root.querySelector('.aiaid-bubble').addEventListener('click', function () {
     root.classList.toggle('open');
-    if (root.classList.contains('open')) { input.focus(); if (!msgs.children.length) addMsg('bot', greeting); }
+    if (root.classList.contains('open')) {
+      // Re-read the page language at open time so a site-level language toggle is respected.
+      if (!ds.lang && !ds.greeting) {
+        zh = /^zh/i.test(document.documentElement.lang || navigator.language);
+        greeting = zh
+          ? '你好，我是 William 的 AI 助理。想了解服务、价格，或者约个时间聊聊，都可以问我。'
+          : "Hi, I'm William's AI assistant. Ask me about services, pricing, or book a time to talk.";
+        input.placeholder = zh ? '输入消息…' : 'Type a message…';
+        sendBtn.textContent = zh ? '发送' : 'Send';
+        root.querySelector('.aiaid-head small').textContent = zh ? '通常几秒内回复' : 'Usually replies in seconds';
+        root.querySelector('.aiaid-foot').textContent = zh ? 'AI 助理，非本人。' : 'AI assistant, not a human.';
+      }
+      input.focus();
+      if (!msgs.children.length) addMsg('bot', greeting);
+    }
   });
   root.querySelector('.aiaid-close').addEventListener('click', function () { root.classList.remove('open'); });
 
