@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { chatTurn, getOrCreateConversation } from './services/chat.js';
 
 const tenantId = process.argv[2] ?? 'default';
-const conversation = getOrCreateConversation(tenantId, undefined, `cli-${randomUUID().slice(0, 8)}`);
+const conversation = await getOrCreateConversation(tenantId, undefined, `cli-${randomUUID().slice(0, 8)}`);
 const rl = createInterface({ input: stdin, output: stdout });
 
 console.log(`Conversation ${conversation.id} (tenant: ${tenantId}). Type "exit" to quit.\n`);

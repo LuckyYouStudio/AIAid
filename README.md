@@ -48,3 +48,18 @@ src/cli.ts               终端测试
 - ~~可嵌入聊天挂件~~ 已完成：`public/widget.js`，演示页 `public/index.html`（启动服务后打开 http://localhost:3000）
 - Telegram 通知实测（`NOTIFY_CHANNEL=telegram` + Bot token / chat id）
 - 简单后台：对话记录、线索列表、登录保护
+
+## 部署到 Vercel + Turso
+
+Vercel 无持久文件系统，线上数据库用 Turso（云端 SQLite）。
+
+1. **Turso**：`turso db create aiaid` 或在 turso.tech 控制台建库，拿到 `libsql://...` URL 和 auth token。
+2. **本地建表并写入租户**（临时指向线上库）：
+   ```bash
+   DATABASE_URL=libsql://xxx.turso.io DATABASE_AUTH_TOKEN=xxx npm run db:push
+   DATABASE_URL=libsql://xxx.turso.io DATABASE_AUTH_TOKEN=xxx npm run db:seed
+   ```
+3. **Vercel**：导入 GitHub 仓库，Framework 选 Other，环境变量填 `.env.example` 里的全部项（`DATABASE_URL` 用 Turso 地址）。
+4. 每次改 `knowledge/knowledge.md` 后，重新执行第 2 步的 seed。
+
+入口：`api/index.ts`（Hono 的 Vercel 适配），静态文件由 Vercel 直接从 `public/` 提供。

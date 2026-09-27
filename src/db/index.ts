@@ -1,14 +1,17 @@
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { config } from '../config.js';
 import * as schema from './schema.js';
 
-mkdirSync(dirname(config.databasePath), { recursive: true });
-const sqlite = new Database(config.databasePath);
-sqlite.pragma('journal_mode = WAL');
-sqlite.pragma('foreign_keys = ON');
+// Local dev: DATABASE_URL=file:./data/app.db
+// Production (Vercel + Turso): DATABASE_URL=libsql://xxx.turso.io + DATABASE_AUTH_TOKEN
+if (config.databaseUrl.startsWith('file:')) {
+  mkdirSync(dirname(config.databaseUrl.slice('file:'.length)), { recursive: true });
+}
 
-export const db = drizzle(sqlite, { schema });
+const client = createClient({ url: config.databaseUrl, authToken: config.databaseAuthToken });
+
+export const db = drizzle(client, { schema });
 export { schema };

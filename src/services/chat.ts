@@ -14,24 +14,25 @@ export interface ChatEvent {
   data: string;
 }
 
-export function getTenant(tenantId: string): Tenant {
-  const t = db.select().from(schema.tenants).where(eq(schema.tenants.id, tenantId)).get();
+export async function getTenant(tenantId: string): Promise<Tenant> {
+  const t = await db.select().from(schema.tenants).where(eq(schema.tenants.id, tenantId)).get();
   if (!t) throw new Error(`Unknown tenant: ${tenantId}`);
   return t;
 }
 
-export function getOrCreateConversation(tenantId: string, conversationId: string | undefined, visitorId: string) {
+export async function getOrCreateConversation(tenantId: string, conversationId: string | undefined, visitorId: string) {
   if (conversationId) {
-    const c = db.select().from(schema.conversations).where(eq(schema.conversations.id, conversationId)).get();
+    const c = await db.select().from(schema.conversations).where(eq(schema.conversations.id, conversationId)).get();
     if (c && c.tenantId === tenantId) return c;
   }
   const c = { id: randomUUID(), tenantId, visitorId, startedAt: new Date(), language: null };
-  db.insert(schema.conversations).values(c).run();
+  await db.insert(schema.conversations).values(c).run();
   return c;
 }
 
-function saveMessage(tenantId: string, conversationId: string, role: string, content: string, meta?: unknown) {
-  db.insert(schema.messages)
+async function saveMessage(tenantId: string, conversationId: string, role: string, content: string, meta?: unknown) {
+  await db
+    .insert(schema.messages)
     .values({
       id: randomUUID(),
       tenantId,
@@ -45,8 +46,8 @@ function saveMessage(tenantId: string, conversationId: string, role: string, con
 }
 
 /** Rebuild the OpenAI message list from persisted messages. */
-function loadHistory(conversationId: string): ChatMessage[] {
-  const rows = db
+async function loadHistory(conversationId: string): Promise<ChatMessage[]> {
+  const rows = await db
     .select()
     .from(schema.messages)
     .where(eq(schema.messages.conversationId, conversationId))
@@ -65,11 +66,11 @@ function loadHistory(conversationId: string): ChatMessage[] {
   });
 }
 
-function upsertLead(tenantId: string, conversationId: string, args: SaveLeadArgs): Lead {
-  const existing = db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
+async function upsertLead(tenantId: string, conversationId: string, args: SaveLeadArgs): Promise<Lead> {
+  const existing = await db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
   const patch = Object.fromEntries(Object.entries(args).filter(([, v]) => typeof v === 'string' && v.trim()));
   if (existing) {
-    db.update(schema.leads).set(patch).where(eq(schema.leads.id, existing.id)).run();
+    await db.update(schema.leads).set(patch).where(eq(schema.leads.id, existing.id)).run();
     return { ...existing, ...patch };
   }
   const lead: Lead = {
@@ -86,7 +87,7 @@ function upsertLead(tenantId: string, conversationId: string, args: SaveLeadArgs
     createdAt: new Date(),
     ...patch,
   };
-  db.insert(schema.leads).values(lead).run();
+  await db.insert(schema.leads).values(lead).run();
   return lead;
 }
 
@@ -99,14 +100,14 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
   }
 
   if (name === 'save_lead') {
-    const lead = upsertLead(tenant.id, conversationId, args as SaveLeadArgs);
+    const lead = await upsertLead(tenant.id, conversationId, args as SaveLeadArgs);
     return JSON.stringify({ ok: true, lead_id: lead.id });
   }
 
   if (name === 'notify_owner') {
     const a = args as NotifyOwnerArgs;
     const cfg = JSON.parse(tenant.notifyConfig || '{}') as NotifyConfig;
-    const lead = db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
+    const lead = await db.select().from(schema.leads).where(eq(schema.leads.conversationId, conversationId)).get();
     try {
       await notifierFor(cfg).send({ reason: a.reason, summary: a.summary, conversationId, lead });
       return JSON.stringify({ ok: true, reply_sla: cfg.replySla ?? 'soon' });
@@ -128,12 +129,12 @@ export async function* chatTurn(
   conversationId: string,
   userText: string,
 ): AsyncGenerator<ChatEvent> {
-  const tenant = getTenant(tenantId);
-  saveMessage(tenantId, conversationId, 'user', userText);
+  const tenant = await getTenant(tenantId);
+  await saveMessage(tenantId, conversationId, 'user', userText);
 
   const messages: ChatMessage[] = [
     { role: 'system', content: composeSystemMessage(tenant) },
-    ...loadHistory(conversationId),
+    ...(await loadHistory(conversationId)),
   ];
 
   const queue: ChatEvent[] = [];
@@ -159,7 +160,7 @@ export async function* chatTurn(
           : {}),
       };
       messages.push(assistantMsg);
-      saveMessage(tenantId, conversationId, 'assistant', result.content, toolCalls.length ? (assistantMsg as any).tool_calls : undefined);
+      await saveMessage(tenantId, conversationId, 'assistant', result.content, toolCalls.length ? (assistantMsg as any).tool_calls : undefined);
 
       if (!toolCalls.length) return;
 
@@ -167,7 +168,7 @@ export async function* chatTurn(
         queue.push({ type: 'tool', data: tc.name });
         const output = await runTool(tenant, conversationId, tc.name, tc.arguments);
         messages.push({ role: 'tool', tool_call_id: tc.id, content: output });
-        saveMessage(tenantId, conversationId, 'tool', output, tc.id);
+        await saveMessage(tenantId, conversationId, 'tool', output, tc.id);
       }
     }
   })()
