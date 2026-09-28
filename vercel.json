@@ -1,9 +1,10 @@
 {
   "framework": null,
   "rewrites": [
-    { "source": "/health", "destination": "/api/health" },
-    { "source": "/app", "destination": "/api/app" },
-    { "source": "/app/(.*)", "destination": "/api/app/$1" },
-    { "source": "/a/(.*)", "destination": "/api/a/$1" }
+    { "source": "/health", "destination": "/api/fn?__path=/api/health" },
+    { "source": "/api/(.*)", "destination": "/api/fn?__path=/api/$1" },
+    { "source": "/app", "destination": "/api/fn?__path=/app" },
+    { "source": "/app/(.*)", "destination": "/api/fn?__path=/app/$1" },
+    { "source": "/a/(.*)", "destination": "/api/fn?__path=/a/$1" }
   ]
 }
