@@ -15,11 +15,19 @@
   var color = ds.color || '#1f6feb';
   var side = ds.position === 'left' ? 'left' : 'right';
   // Follow the host page's <html lang> when set, otherwise the browser language.
-  var zh = /^zh/i.test(ds.lang || document.documentElement.lang || navigator.language);
+  var langTag = ds.lang || document.documentElement.lang || navigator.language;
+  var zh = /^zh/i.test(langTag);
+  // Traditional Chinese UI labels for zh-HK / zh-TW / zh-Hant pages.
+  var zht = /^zh-(hk|tw|mo|hant)/i.test(langTag);
+  var L = zht
+    ? { placeholder: '輸入訊息…', send: '傳送', sub: '通常幾秒內回覆', foot: 'AI 助理，非本人。', fail: '連線失敗，請稍後再試。' }
+    : zh
+      ? { placeholder: '输入消息…', send: '发送', sub: '通常几秒内回复', foot: 'AI 助理，非本人。', fail: '连接失败，请稍后再试。' }
+      : { placeholder: 'Type a message…', send: 'Send', sub: 'Usually replies in seconds', foot: 'AI assistant, not a human.', fail: 'Connection failed, please try again.' };
   var greeting = ds.greeting || (zh
     ? '你好，我是 William 的 AI 助理。想了解服务、价格，或者约个时间聊聊，都可以问我。'
     : "Hi, I'm William's AI assistant. Ask me about services, pricing, or book a time to talk.");
-  var placeholder = zh ? '输入消息…' : 'Type a message…';
+  var placeholder = L.placeholder;
   var storageKey = 'aiaid:conversation:' + tenant;
 
   /* ---------- styles ---------- */
@@ -58,11 +66,11 @@
   root.className = 'aiaid-root';
   root.innerHTML =
     '<div class="aiaid-panel" role="dialog" aria-label="' + esc(title) + '">' +
-    '<div class="aiaid-head"><div><b>' + esc(title) + '</b><small>' + (zh ? '通常几秒内回复' : 'Usually replies in seconds') + '</small></div>' +
+    '<div class="aiaid-head"><div><b>' + esc(title) + '</b><small>' + L.sub + '</small></div>' +
     '<button class="aiaid-close" aria-label="close">×</button></div>' +
     '<div class="aiaid-msgs"></div>' +
-    '<form class="aiaid-form"><textarea rows="1" placeholder="' + esc(placeholder) + '"></textarea><button class="aiaid-send" type="submit">' + (zh ? '发送' : 'Send') + '</button></form>' +
-    '<div class="aiaid-foot">' + (zh ? 'AI 助理，非本人。' : 'AI assistant, not a human.') + '</div>' +
+    '<form class="aiaid-form"><textarea rows="1" placeholder="' + esc(placeholder) + '"></textarea><button class="aiaid-send" type="submit">' + L.send + '</button></form>' +
+    '<div class="aiaid-foot">' + L.foot + '</div>' +
     '</div>' +
     '<button class="aiaid-bubble" aria-label="chat"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z"/></svg></button>';
   document.body.appendChild(root);
@@ -180,7 +188,7 @@
       return pump();
     }).catch(function (err) {
       bot.remove();
-      addMsg('err', err.message || (zh ? '连接失败，请稍后再试。' : 'Connection failed, please try again.'));
+      addMsg('err', err.message || L.fail);
     }).then(function () {
       bot.classList.remove('typing');
       if (!buf && bot.parentNode) bot.remove();
@@ -207,7 +215,8 @@
       } else if (event === 'reset') {
         pendingReset = true;
       } else if (event === 'error') {
-        addMsg('err', payload);
+        // Model/provider errors are not actionable for visitors; show a short generic line.
+        addMsg('err', /overloaded|rate limit|timeout|5\d\d/i.test(payload) ? L.fail : payload);
       }
     }
   }

@@ -9,6 +9,8 @@ function required(name: string): string {
 export const config = {
   openaiApiKey: required('OPENAI_API_KEY'),
   openaiModel: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+  // Used for the single retry after a transient provider error (empty = same model).
+  openaiFallbackModel: process.env.OPENAI_FALLBACK_MODEL ?? '',
   openaiBaseUrl: process.env.OPENAI_BASE_URL,
   port: Number(process.env.PORT ?? 3000),
   databaseUrl: process.env.DATABASE_URL ?? 'file:./data/app.db',
