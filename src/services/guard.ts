@@ -1,18 +1,22 @@
 // Abuse protection that must not depend on the model: origin allowlist, size caps and
 // DB-backed rate limits (the server is serverless, so in-memory counters would not work).
-import { and, count, eq, gt, or } from 'drizzle-orm';
+import { and, count, eq, gt, gte, or } from 'drizzle-orm';
 import { db, schema } from '../db/index.js';
+import type { Tenant } from '../db/schema.js';
 import { config } from '../config.js';
+import { parseJson } from './tenants.js';
 
 export type GuardResult = { ok: true } | { ok: false; status: number; error: string };
 
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 
-export function checkOrigin(origin: string | undefined): GuardResult {
+/** The platform's own origins are always allowed; each tenant adds the sites it embeds on. */
+export function checkOrigin(origin: string | undefined, tenant: Tenant): GuardResult {
   if (!origin) return { ok: false, status: 403, error: 'origin required' };
-  if (!config.allowedOrigins.includes(origin)) return { ok: false, status: 403, error: 'origin not allowed' };
-  return { ok: true };
+  const tenantOrigins = parseJson<string[]>(tenant.allowedOrigins, []);
+  if (config.allowedOrigins.includes(origin) || tenantOrigins.includes(origin)) return { ok: true };
+  return { ok: false, status: 403, error: 'origin not allowed for this assistant' };
 }
 
 export function checkMessage(message: string): GuardResult {
@@ -34,6 +38,7 @@ async function userMessagesSince(since: Date, where?: ReturnType<typeof or>): Pr
 }
 
 export async function checkRateLimits(args: {
+  tenant: Tenant;
   visitorId: string;
   ip: string;
   conversationId: string;
@@ -41,8 +46,11 @@ export async function checkRateLimits(args: {
   const now = Date.now();
   const who = or(eq(schema.conversations.visitorId, args.visitorId), eq(schema.conversations.ip, args.ip));
   const { limits } = config;
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
 
-  const [lastMinute, lastDay, globalDay, turns] = await Promise.all([
+  const [lastMinute, lastDay, globalDay, turns, tenantMonth] = await Promise.all([
     userMessagesSince(new Date(now - MINUTE), who),
     userMessagesSince(new Date(now - DAY), who),
     userMessagesSince(new Date(now - DAY)),
@@ -52,11 +60,20 @@ export async function checkRateLimits(args: {
       .where(and(eq(schema.messages.conversationId, args.conversationId), eq(schema.messages.role, 'user')))
       .get()
       .then((r) => r?.n ?? 0),
+    db
+      .select({ n: count() })
+      .from(schema.messages)
+      .where(and(eq(schema.messages.tenantId, args.tenant.id), eq(schema.messages.role, 'user'), gte(schema.messages.createdAt, monthStart)))
+      .get()
+      .then((r) => r?.n ?? 0),
   ]);
 
   if (lastMinute >= limits.perMinute) return { ok: false, status: 429, error: 'too many messages, please wait a minute' };
   if (lastDay >= limits.perDay) return { ok: false, status: 429, error: 'daily message limit reached, please email us instead' };
   if (turns >= limits.maxTurnsPerConversation) return { ok: false, status: 429, error: 'this conversation is full, please start a new one' };
+  if (args.tenant.monthlyLimit > 0 && tenantMonth >= args.tenant.monthlyLimit) {
+    return { ok: false, status: 429, error: 'this assistant has reached its monthly message limit' };
+  }
   if (globalDay >= limits.globalPerDay) return { ok: false, status: 503, error: 'the assistant is busy today, please email us instead' };
   return { ok: true };
 }

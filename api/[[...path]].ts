@@ -7,6 +7,9 @@
 import { handle } from 'hono/vercel';
 import { app } from '../src/app.js';
 
+// Website import (fetch pages + model) can take a while; allow up to 60s.
+export const maxDuration = 60;
+
 const handler = handle(app);
 
 export const GET = handler;

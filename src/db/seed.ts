@@ -19,10 +19,18 @@ const notifyConfig = {
 const row = {
   id: DEFAULT_TENANT_ID,
   name: config.ownerName,
+  ownerName: config.ownerName,
+  ownerDescription: 'an independent IT / AI developer',
+  extraRules: '',
+  replySla: config.replySla,
+  websiteUrl: 'https://www.the5288.com',
   systemPrompt: buildSystemPrompt({ ownerName: config.ownerName, replySla: config.replySla }),
   knowledgeMd,
   bookingUrl: config.bookingUrl,
   notifyConfig: JSON.stringify(notifyConfig),
+  widgetConfig: JSON.stringify({ title: 'LuckyYou Studio AI 助理 / AI Assistant' }),
+  allowedOrigins: JSON.stringify([]),
+  monthlyLimit: 0,
   createdAt: new Date(),
 };
 

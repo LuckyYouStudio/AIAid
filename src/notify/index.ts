@@ -1,10 +1,13 @@
 import type { Lead } from '../db/schema.js';
+import { sendEmail } from './email.js';
 
 export interface OwnerNotification {
   reason: string;
   summary: string;
   conversationId: string;
   lead?: Lead | null;
+  /** Deep link to the conversation in the dashboard, when known. */
+  link?: string;
 }
 
 export interface Notifier {
@@ -12,7 +15,8 @@ export interface Notifier {
 }
 
 export interface NotifyConfig {
-  channel?: 'console' | 'telegram';
+  channel?: 'console' | 'telegram' | 'email';
+  email?: string;
   replySla?: string;
   telegram?: { botToken?: string; chatId?: string };
 }
@@ -28,6 +32,7 @@ export function formatNotification(n: OwnerNotification): string {
       `Contact: ${n.lead.contact ?? '-'}`,
     );
   }
+  if (n.link) lines.push(`Open: ${n.link}`);
   return lines.join('\n');
 }
 
@@ -50,11 +55,19 @@ export function telegramNotifier(botToken: string, chatId: string): Notifier {
   };
 }
 
-// Email notifier reserved for later; it will implement the same Notifier interface.
+export function emailNotifier(to: string): Notifier {
+  return {
+    async send(n) {
+      const subject = n.reason === 'new_lead' ? 'New lead from your AI assistant' : `Your AI assistant needs you (${n.reason})`;
+      await sendEmail(to, subject, formatNotification(n));
+    },
+  };
+}
 
 export function notifierFor(cfg: NotifyConfig): Notifier {
   if (cfg.channel === 'telegram' && cfg.telegram?.botToken && cfg.telegram?.chatId) {
     return telegramNotifier(cfg.telegram.botToken, cfg.telegram.chatId);
   }
+  if (cfg.channel === 'email' && cfg.email) return emailNotifier(cfg.email);
   return consoleNotifier;
 }

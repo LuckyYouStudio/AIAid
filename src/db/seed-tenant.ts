@@ -18,6 +18,10 @@ interface TenantFile {
   replySla?: string;
   notifyChannel?: 'console' | 'telegram';
   extraRules?: string[];
+  websiteUrl?: string;
+  widget?: { title?: string; color?: string; greeting?: string; position?: 'right' | 'left' };
+  allowedOrigins?: string[];
+  monthlyLimit?: number;
 }
 
 const dir = process.argv[2];
@@ -43,6 +47,11 @@ const notifyConfig = {
 const row = {
   id: t.id,
   name: t.name,
+  ownerName: t.ownerName,
+  ownerDescription: t.ownerDescription ?? '',
+  extraRules: (t.extraRules ?? []).join('\n'),
+  replySla,
+  websiteUrl: t.websiteUrl ?? '',
   systemPrompt: buildSystemPrompt({
     ownerName: t.ownerName,
     replySla,
@@ -52,6 +61,9 @@ const row = {
   knowledgeMd,
   bookingUrl: t.bookingUrl ?? '',
   notifyConfig: JSON.stringify(notifyConfig),
+  widgetConfig: JSON.stringify(t.widget ?? {}),
+  allowedOrigins: JSON.stringify(t.allowedOrigins ?? []),
+  monthlyLimit: t.monthlyLimit ?? 0,
   createdAt: new Date(),
 };
 

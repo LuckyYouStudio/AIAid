@@ -15,6 +15,10 @@ function tenantTag(tenant: Tenant): string {
   return tenant.id === 'default' ? '' : `[${tenant.name}] `;
 }
 
+function dashboardLink(tenant: Tenant, conversationId: string): string {
+  return `${config.appOrigins[0]}/app/t/${tenant.id}/conversations/${conversationId}`;
+}
+
 export interface ChatEvent {
   // 'reset' tells the client to discard text streamed so far in this turn: the model wrote a
   // reply, called a tool, and is now writing the reply again with the tool result in hand.
@@ -136,6 +140,7 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
           summary: `${tenantTag(tenant)}New lead with contact details: ${lead.need ?? '(need not stated yet)'}`,
           conversationId,
           lead,
+          link: dashboardLink(tenant, conversationId),
         });
         ownerNotified = true;
       } catch (err) {
@@ -160,7 +165,13 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
       });
     }
     try {
-      await notifierFor(cfg).send({ reason: a.reason, summary: tenantTag(tenant) + a.summary, conversationId, lead });
+      await notifierFor(cfg).send({
+        reason: a.reason,
+        summary: tenantTag(tenant) + a.summary,
+        conversationId,
+        lead,
+        link: dashboardLink(tenant, conversationId),
+      });
       return JSON.stringify({ ok: true, reply_sla: cfg.replySla ?? 'soon' });
     } catch (err) {
       console.error('notify_owner failed:', err);

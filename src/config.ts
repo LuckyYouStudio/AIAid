@@ -22,6 +22,15 @@ export const config = {
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN,
   telegramChatId: process.env.TELEGRAM_CHAT_ID,
 
+  isProduction: process.env.VERCEL === '1' || process.env.NODE_ENV === 'production',
+  // Where the dashboard lives (used for links in emails and CSRF checks).
+  appOrigins: (process.env.APP_ORIGINS ?? 'https://www.the5288.com,http://localhost:3000').split(',').map((s) => s.trim()),
+  // Emails that get the admin role on signup (see every tenant).
+  adminEmails: (process.env.ADMIN_EMAILS ?? '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
+  // Transactional email (Resend). Without a key, email notifications are logged instead of sent.
+  resendApiKey: process.env.RESEND_API_KEY,
+  emailFrom: process.env.EMAIL_FROM ?? 'LuckyYou Studio <onboarding@resend.dev>',
+
   // Abuse protection. Origins are the sites allowed to embed the widget / call /api/chat.
   allowedOrigins: (
     process.env.ALLOWED_ORIGINS ??
@@ -38,6 +47,7 @@ export const config = {
     maxTurnsPerConversation: num('LIMIT_TURNS_PER_CONVERSATION', 40),
     historyMessages: num('LIMIT_HISTORY_MESSAGES', 24), // messages sent to the model
     maxOutputTokens: num('LIMIT_OUTPUT_TOKENS', 600),
+    monthlyPerTenant: num('LIMIT_MONTHLY_PER_TENANT', 300), // free tier: user messages per assistant per month
   },
 };
 

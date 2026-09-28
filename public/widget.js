@@ -56,6 +56,10 @@
     '.aiaid-send:disabled{opacity:.5;cursor:default}',
     '.aiaid-foot{text-align:center;font-size:11px;color:#8a8f98;padding:0 0 8px;background:#fff}',
     '@media (max-width:480px){.aiaid-panel{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;border-radius:0}.aiaid-root.open .aiaid-bubble{display:none}}',
+    // Inline mode (data-inline="<element id>"): the panel fills the host element, always open, no bubble.
+    '.aiaid-root.aiaid-inline{position:absolute;inset:0;bottom:auto;right:auto;left:auto}',
+    '.aiaid-root.aiaid-inline .aiaid-panel{position:absolute;inset:0;width:100%;max-width:none;height:100%;max-height:none;border-radius:0;box-shadow:none;display:flex}',
+    '.aiaid-root.aiaid-inline .aiaid-bubble,.aiaid-root.aiaid-inline .aiaid-close{display:none}',
   ].join('\n');
   var style = document.createElement('style');
   style.textContent = css;
@@ -73,7 +77,13 @@
     '<div class="aiaid-foot">' + L.foot + '</div>' +
     '</div>' +
     '<button class="aiaid-bubble" aria-label="chat"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z"/></svg></button>';
-  document.body.appendChild(root);
+  var inlineHost = ds.inline ? document.getElementById(ds.inline) : null;
+  if (inlineHost) {
+    root.classList.add('aiaid-inline', 'open');
+    inlineHost.appendChild(root);
+  } else {
+    document.body.appendChild(root);
+  }
 
   var panel = root.querySelector('.aiaid-panel');
   var msgs = root.querySelector('.aiaid-msgs');
@@ -110,6 +120,7 @@
     }
   });
   root.querySelector('.aiaid-close').addEventListener('click', function () { root.classList.remove('open'); });
+  if (inlineHost) addMsg('bot', greeting);
 
   input.addEventListener('input', function () {
     input.style.height = 'auto';
