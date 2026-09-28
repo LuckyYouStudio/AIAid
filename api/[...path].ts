@@ -1,5 +1,5 @@
-// Vercel serverless entry. The optional catch-all filename makes this function handle /api and
-// every path under /api/* without rewrites; static files in /public are served by Vercel directly.
+// Vercel serverless entry. The catch-all filename makes this function handle every path under /api/*
+// (Vercel did not match multi-segment paths with the optional form [[...path]]); static files in /public are served by Vercel directly.
 //
 // Exporting per-method handlers (instead of a default export) makes Vercel use the Web API
 // signature: we receive a standard Request and return a standard Response, so streaming works
