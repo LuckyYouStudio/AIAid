@@ -80,7 +80,9 @@ export async function currentUser(c: Context): Promise<User | null> {
 /** Hono middleware: requires a signed-in user, stores it on the context. Redirects to login otherwise. */
 export async function requireUser(c: Context, next: Next) {
   const user = await currentUser(c);
-  if (!user) return c.redirect(`/app/login?next=${encodeURIComponent(c.req.path)}`);
+  // Strip the /api prefix Vercel's rewrite adds so the post-login redirect uses the public URL.
+  const returnTo = c.req.path.replace(/^\/api(?=\/)/, '');
+  if (!user) return c.redirect(`/app/login?next=${encodeURIComponent(returnTo)}`);
   c.set('user', user);
   await next();
 }

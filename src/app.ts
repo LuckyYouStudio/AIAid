@@ -63,13 +63,17 @@ app.post('/api/chat', async (c) => {
 });
 
 // Hosted chat page for tenants without a website: /a/<tenant id>
-app.get('/a/:id', async (c) => {
+const hosted = async (c: any) => {
   const t = await db.select().from(schema.tenants).where(eq(schema.tenants.id, c.req.param('id'))).get();
   if (!t) return c.text('not found', 404);
   return c.html(hostedPage(t));
-});
+};
+app.get('/a/:id', hosted);
 
-// Dashboard
+// Dashboard. On Vercel, vercel.json rewrites /app/* and /a/* to /api/app/* and /api/a/*
+// (only /api/* reaches this function), and Hono sees the rewritten path, so mount both.
 app.route('/app', web);
+app.route('/api/app', web);
+app.get('/api/a/:id', hosted);
 
 export default app;

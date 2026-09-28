@@ -57,7 +57,7 @@
     '.aiaid-foot{text-align:center;font-size:11px;color:#8a8f98;padding:0 0 8px;background:#fff}',
     '@media (max-width:480px){.aiaid-panel{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;border-radius:0}.aiaid-root.open .aiaid-bubble{display:none}}',
     // Inline mode (data-inline="<element id>"): the panel fills the host element, always open, no bubble.
-    '.aiaid-root.aiaid-inline{position:absolute;inset:0;bottom:auto;right:auto;left:auto}',
+    '.aiaid-root.aiaid-inline{position:absolute;top:0;left:0;right:0;bottom:0}',
     '.aiaid-root.aiaid-inline .aiaid-panel{position:absolute;inset:0;width:100%;max-width:none;height:100%;max-height:none;border-radius:0;box-shadow:none;display:flex}',
     '.aiaid-root.aiaid-inline .aiaid-bubble,.aiaid-root.aiaid-inline .aiaid-close{display:none}',
   ].join('\n');
