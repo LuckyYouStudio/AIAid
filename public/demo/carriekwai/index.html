@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Demo · Carrie Kwai AI 助理 | LuckyYou Studio</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #111; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "PingFang SC", "Microsoft JhengHei", sans-serif; }
+    .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 2147483001; background: #0f172a; color: #fff; font-size: 13px; line-height: 1.4; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+    .bar b { color: #fbbf24; }
+    .bar a { color: #93c5fd; text-decoration: none; white-space: nowrap; }
+    .bar .hint { opacity: .85; }
+    .shot { position: absolute; top: 36px; left: 0; right: 0; bottom: 0; background: #fff url(site-desktop.jpg) top center / cover no-repeat; }
+    @media (max-width: 720px) { .shot { background-image: url(site-mobile.jpg); } .bar { font-size: 12px; } .bar .hint { display: none; } }
+    .pulse { position: fixed; right: 92px; bottom: 30px; z-index: 2147482999; background: #fff; color: #16181d; border-radius: 12px; padding: 10px 14px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.25); animation: nudge 1.6s ease-in-out infinite; }
+    .pulse::after { content: ""; position: absolute; right: -8px; bottom: 16px; border: 8px solid transparent; border-left-color: #fff; border-right: 0; }
+    @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+    .aiaid-root.open ~ .pulse, body.chat-open .pulse { display: none; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div><b>演示 Demo</b> · 這是 LuckyYou Studio 根據 carriekwai.com 公開資料生成的 AI 接待助理示範，非 Carrie Kwai 官方頁面。<span class="hint">右下角試試問它：樓花有什麼優惠？Metrotown 有什麼放盤？想睇樓怎樣約？</span></div>
+    <a href="https://www.the5288.com/vancouver/" target="_blank" rel="noopener">了解 AI 接待助理 →</a>
+  </div>
+  <div class="shot" aria-hidden="true"></div>
+  <div class="pulse" id="pulse">試試問我樓盤 👉</div>
+
+  <script>
+    document.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.aiaid-bubble')) document.body.classList.add('chat-open');
+    });
+  </script>
+  <script src="/widget.js" data-tenant="carriekwai" data-title="Carrie Kwai 助理 · AI Assistant" data-color="#a8135f" data-lang="zh" data-greeting="你好！我係 Carrie Kwai 嘅 AI 助理。想問樓花優惠、現樓放盤、放租或者約睇樓，都可以直接問我。"></script>
+</body>
+</html>

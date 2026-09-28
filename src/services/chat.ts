@@ -10,6 +10,11 @@ import { notifierFor, type NotifyConfig } from '../notify/index.js';
 
 const MAX_TOOL_ROUNDS = 4;
 
+/** Prefix so the deployment owner can tell which tenant (e.g. a sales demo) a notification is about. */
+function tenantTag(tenant: Tenant): string {
+  return tenant.id === 'default' ? '' : `[${tenant.name}] `;
+}
+
 export interface ChatEvent {
   // 'reset' tells the client to discard text streamed so far in this turn: the model wrote a
   // reply, called a tool, and is now writing the reply again with the tool result in hand.
@@ -128,7 +133,7 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
       try {
         await notifierFor(cfg).send({
           reason: 'new_lead',
-          summary: `New lead with contact details: ${lead.need ?? '(need not stated yet)'}`,
+          summary: `${tenantTag(tenant)}New lead with contact details: ${lead.need ?? '(need not stated yet)'}`,
           conversationId,
           lead,
         });
@@ -155,7 +160,7 @@ async function runTool(tenant: Tenant, conversationId: string, name: string, raw
       });
     }
     try {
-      await notifierFor(cfg).send({ reason: a.reason, summary: a.summary, conversationId, lead });
+      await notifierFor(cfg).send({ reason: a.reason, summary: tenantTag(tenant) + a.summary, conversationId, lead });
       return JSON.stringify({ ok: true, reply_sla: cfg.replySla ?? 'soon' });
     } catch (err) {
       console.error('notify_owner failed:', err);

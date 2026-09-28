@@ -10,7 +10,8 @@
     "cli": "tsx src/cli.ts",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:seed:tenant": "tsx src/db/seed-tenant.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
