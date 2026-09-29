@@ -352,6 +352,17 @@ web.get('/t/:id/settings', async (c) => {
           </div>
           <p><button class="btn" type="submit">保存设置</button></p>
         </form>
+        ${user.role === 'admin'
+          ? html`<div class="card" style="border-color:#bcd3f7">
+              <h2 style="margin-top:0">额度 <span class="pill">仅管理员可见</span></h2>
+              <form method="post" action="/app/t/${t.id}/limit" class="row">
+                <label style="margin:0">每月消息上限 <small>（访客消息条数，0 = 不限）</small></label>
+                <input type="number" name="monthlyLimit" min="0" step="1" value="${t.monthlyLimit}" style="width:140px" />
+                <button class="btn sm" type="submit">保存额度</button>
+                <span class="small muted">归属：${t.ownerUserId ?? '未认领'} · 本月已用见概览</span>
+              </form>
+            </div>`
+          : ''}
         <div class="card" style="border-color:#f3c9c5">
           <h2 style="margin-top:0">删除助理</h2>
           <p class="small muted">会删除这个助理的全部对话和线索，不可恢复。</p>
@@ -384,6 +395,18 @@ web.post('/t/:id/settings', async (c) => {
   };
   await updateTenant(t, input);
   return c.redirect(`/app/t/${t.id}/settings?msg=${encodeURIComponent('已保存')}`);
+});
+
+web.post('/t/:id/limit', async (c) => {
+  if (!sameOrigin(c)) return c.text('forbidden', 403);
+  if (c.get('user').role !== 'admin') return c.text('forbidden', 403);
+  const t = await loadTenant(c);
+  if (!t) return c.text('not found', 404);
+  const f = await c.req.formData();
+  const n = Math.max(0, Math.floor(Number(f.get('monthlyLimit'))));
+  if (!Number.isFinite(n)) return c.text('bad number', 400);
+  await db.update(schema.tenants).set({ monthlyLimit: n }).where(eq(schema.tenants.id, t.id)).run();
+  return c.redirect(`/app/t/${t.id}/settings?msg=${encodeURIComponent(n === 0 ? '额度已设为不限' : `额度已设为每月 ${n} 条`)}`);
 });
 
 web.post('/t/:id/delete', async (c) => {
